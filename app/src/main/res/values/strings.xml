@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">FinanceKu</string>
+    <string name="total_saldo">Total Saldo</string>
+    <string name="default_saldo">Rp 0</string>
+    <string name="ringkasan_default">Pemasukan: Rp 0  |  Pengeluaran: Rp 0</string>
+    <string name="daftar_transaksi">Daftar Transaksi</string>
+    <string name="desc_tambah_transaksi">Tambah Transaksi</string>
 </resources>

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:id="@+id/main" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFAF0"
     tools:context=".MainActivity">
@@ -26,7 +26,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total Saldo"
+                android:text="@string/total_saldo"
                 android:textColor="#BBDEFB"
                 android:textSize="16sp" />
 
@@ -35,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Rp 0"
+                android:text="@string/default_saldo"
                 android:textColor="#FFFFFF"
                 android:textSize="32sp"
                 android:textStyle="bold" />
@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Pemasukan: Rp 0  |  Pengeluaran: Rp 0"
+                android:text="@string/ringkasan_default"
                 android:textColor="#E3F2FD"
                 android:textSize="12sp" />
 
@@ -59,9 +59,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/cardSaldo"
         android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
         android:layout_marginTop="4dp"
-        android:text="Daftar Transaksi"
+        android:text="@string/daftar_transaksi"
         android:textColor="#424242"
         android:textSize="16sp"
         android:textStyle="bold" />
@@ -85,10 +84,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="20dp"
-        android:contentDescription="Tambah Transaksi"
+        android:contentDescription="@string/desc_tambah_transaksi"
         android:src="@android:drawable/ic_input_add"
         app:backgroundTint="#1565C0"
         app:elevation="6dp"
