@@ -43,6 +43,40 @@ public class UbahActivity extends AppCompatActivity {
         btnSimpan = (Button) findViewById(R.id.btnSimpan);
         btnHapus = (Button) findViewById(R.id.btnHapus);
 
+        etNominal.addTextChangedListener(new android.text.TextWatcher() {
+            private String current = "";
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().equals(current)) {
+                    etNominal.removeTextChangedListener(this);
+
+                    String cleanString = s.toString().replaceAll("[.,]", "");
+                    if (!cleanString.isEmpty()) {
+                        try {
+                            double parsed = Double.parseDouble(cleanString);
+                            java.text.NumberFormat format = java.text.NumberFormat.getInstance(java.util.Locale.GERMANY);
+                            String formatted = format.format(parsed);
+
+                            current = formatted;
+                            etNominal.setText(formatted);
+                            etNominal.setSelection(formatted.length());
+                        } catch (NumberFormatException e) {
+                            // ignore
+                        }
+                    }
+
+                    etNominal.addTextChangedListener(this);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
+
         idTransaksi = getIntent().getIntExtra("id", -1);
         if (idTransaksi == -1) {
             Toast.makeText(this, "ID transaksi tidak ditemukan", Toast.LENGTH_SHORT).show();
@@ -77,7 +111,10 @@ public class UbahActivity extends AppCompatActivity {
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
             etJudul.setText(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_JUDUL)));
-            etNominal.setText(String.valueOf(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_NOMINAL))));
+
+            int nominal = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_NOMINAL));
+            java.text.NumberFormat format = java.text.NumberFormat.getInstance(java.util.Locale.GERMANY);
+            etNominal.setText(format.format(nominal));
 
             String jenis = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_JENIS));
             if (jenis != null && jenis.equals(DatabaseHelper.JENIS_PENGELUARAN)) {
@@ -92,7 +129,7 @@ public class UbahActivity extends AppCompatActivity {
 
     private void simpanPerubahan() {
         String judul = etJudul.getText().toString().trim();
-        String nominalText = etNominal.getText().toString().trim();
+        String nominalText = etNominal.getText().toString().trim().replaceAll("[.,]", "");
 
         if (judul.isEmpty() || nominalText.isEmpty()) {
             Toast.makeText(getApplicationContext(), "Data tidak boleh kosong!",

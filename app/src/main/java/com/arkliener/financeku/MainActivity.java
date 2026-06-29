@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvTotalSaldo, tvRingkasan;
     private ListView listView;
     private FloatingActionButton fabTambah;
+    private android.widget.Button btnReset, btnSimpanHistory, btnLihatHistory;
     private final List<Transaksi> daftarTransaksi = new ArrayList<>();
     private TransaksiAdapter adapter;
     public static MainActivity da;
@@ -50,9 +51,42 @@ public class MainActivity extends AppCompatActivity {
         tvRingkasan = (TextView) findViewById(R.id.tvRingkasan);
         listView = (ListView) findViewById(R.id.listViewTransaksi);
         fabTambah = (FloatingActionButton) findViewById(R.id.fabTambah);
+        btnReset = (android.widget.Button) findViewById(R.id.btnReset);
+        btnSimpanHistory = (android.widget.Button) findViewById(R.id.btnSimpanHistory);
+        btnLihatHistory = (android.widget.Button) findViewById(R.id.btnLihatHistory);
 
         adapter = new TransaksiAdapter();
         listView.setAdapter(adapter);
+
+        btnReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new androidx.appcompat.app.AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Hapus Semua")
+                        .setMessage("Apakah Anda yakin ingin menghapus semua data transaksi?")
+                        .setPositiveButton("Ya", (dialog, which) -> {
+                            dbHelper.deleteAllTransaksi();
+                            refreshData();
+                        })
+                        .setNegativeButton("Tidak", null)
+                        .show();
+            }
+        });
+
+        btnSimpanHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tampilkanDialogSimpanHistory();
+            }
+        });
+
+        btnLihatHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+                startActivity(intent);
+            }
+        });
 
         fabTambah.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +160,33 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         // Pastikan data selalu segar saat kembali dari Tambah/Ubah Activity.
         refreshData();
+    }
+
+    private void tampilkanDialogSimpanHistory() {
+        final android.widget.EditText input = new android.widget.EditText(this);
+        input.setHint("Nama History (misal: Januari 2024)");
+
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Simpan ke History")
+                .setMessage("Data transaksi saat ini akan disimpan sebagai history dan daftar transaksi akan dikosongkan.")
+                .setView(input)
+                .setPositiveButton("Simpan", (dialog, which) -> {
+                    String nama = input.getText().toString().trim();
+                    if (!nama.isEmpty()) {
+                        int pem = hitungTotal(DatabaseHelper.JENIS_PEMASUKAN);
+                        int peng = hitungTotal(DatabaseHelper.JENIS_PENGELUARAN);
+                        String tgl = new java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new java.util.Date());
+
+                        long historyId = dbHelper.tambahHistory(nama, pem, peng, tgl);
+                        dbHelper.archiveCurrentTransactions((int) historyId);
+                        refreshData();
+                        android.widget.Toast.makeText(MainActivity.this, "Berhasil disimpan ke history", android.widget.Toast.LENGTH_SHORT).show();
+                    } else {
+                        android.widget.Toast.makeText(MainActivity.this, "Nama history tidak boleh kosong", android.widget.Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Batal", null)
+                .show();
     }
 
     private class TransaksiAdapter extends BaseAdapter {
