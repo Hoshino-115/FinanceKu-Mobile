@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/main"
+    android:background="#FFFAF0">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="30dp"
+        tools:context=".UbahActivity">
+
+        <TextView
+            android:id="@+id/tvJudulHalaman"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:text="Ubah Transaksi"
+            android:textColor="#1565C0"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvLabelJudul"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvJudulHalaman"
+            android:layout_marginTop="24dp"
+            android:text="Judul Transaksi"
+            android:textColor="#424242"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/etJudul"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvLabelJudul"
+            android:layout_marginTop="4dp"
+            android:hint="Contoh: Makan Siang"
+            android:inputType="text"
+            android:maxLength="50" />
+
+        <TextView
+            android:id="@+id/tvLabelNominal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/etJudul"
+            android:layout_marginTop="16dp"
+            android:text="Nominal"
+            android:textColor="#424242"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/etNominal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvLabelNominal"
+            android:layout_marginTop="4dp"
+            android:hint="0"
+            android:inputType="number" />
+
+        <TextView
+            android:id="@+id/tvLabelJenis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/etNominal"
+            android:layout_marginTop="16dp"
+            android:text="Jenis Transaksi"
+            android:textColor="#424242"
+            android:textSize="14sp" />
+
+        <RadioGroup
+            android:id="@+id/rgJenis"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvLabelJenis"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rbPemasukan"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Pemasukan" />
+
+            <RadioButton
+                android:id="@+id/rbPengeluaran"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Pengeluaran" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/btnSimpan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rgJenis"
+            android:layout_marginTop="32dp"
+            android:backgroundTint="#1565C0"
+            android:text="Simpan Perubahan"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnHapus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnSimpan"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="#C62828"
+            android:text="Hapus"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+</ScrollView>

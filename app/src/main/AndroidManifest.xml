@@ -12,6 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FinanceKu">
         <activity
+            android:name=".UbahActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Transaksi"
+            android:exported="false" />
+        <activity
+            android:name=".TambahActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
