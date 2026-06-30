@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+import android.app.DatePickerDialog;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
@@ -17,12 +18,17 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 public class UbahActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
-    private EditText etJudul, etNominal;
-    private RadioGroup rgJenis;
+    private EditText etJudul, etNominal, etTanggal;
+    private RadioGroup rgJenis, rgMetode;
     private Button btnSimpan, btnHapus;
     private int idTransaksi;
+    private Calendar calendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +45,48 @@ public class UbahActivity extends AppCompatActivity {
 
         etJudul = (EditText) findViewById(R.id.etJudul);
         etNominal = (EditText) findViewById(R.id.etNominal);
+        etTanggal = (EditText) findViewById(R.id.etTanggal);
         rgJenis = (RadioGroup) findViewById(R.id.rgJenis);
+        rgMetode = (RadioGroup) findViewById(R.id.rgMetode);
         btnSimpan = (Button) findViewById(R.id.btnSimpan);
         btnHapus = (Button) findViewById(R.id.btnHapus);
+
+        calendar = Calendar.getInstance();
+        etTanggal.setOnClickListener(v -> showDatePicker());
+
+        etNominal.addTextChangedListener(new android.text.TextWatcher() {
+            private String current = "";
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().equals(current)) {
+                    etNominal.removeTextChangedListener(this);
+
+                    String cleanString = s.toString().replaceAll("[.,]", "");
+                    if (!cleanString.isEmpty()) {
+                        try {
+                            double parsed = Double.parseDouble(cleanString);
+                            java.text.NumberFormat format = java.text.NumberFormat.getInstance(java.util.Locale.GERMANY);
+                            String formatted = format.format(parsed);
+
+                            current = formatted;
+                            etNominal.setText(formatted);
+                            etNominal.setSelection(formatted.length());
+                        } catch (NumberFormatException e) {
+                            // ignore
+                        }
+                    }
+
+                    etNominal.addTextChangedListener(this);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
 
         idTransaksi = getIntent().getIntExtra("id", -1);
         if (idTransaksi == -1) {
@@ -67,6 +112,21 @@ public class UbahActivity extends AppCompatActivity {
         });
     }
 
+    private void showDatePicker() {
+        new DatePickerDialog(UbahActivity.this, (view, year, month, dayOfMonth) -> {
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, month);
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            updateLabel();
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+    private void updateLabel() {
+        String myFormat = "EEEE, dd MMMM yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, new Locale("id", "ID"));
+        etTanggal.setText(sdf.format(calendar.getTime()));
+    }
+
     private void tampilkanDataLama() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(
@@ -77,13 +137,37 @@ public class UbahActivity extends AppCompatActivity {
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
             etJudul.setText(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_JUDUL)));
-            etNominal.setText(String.valueOf(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_NOMINAL))));
+
+            int nominal = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_NOMINAL));
+            java.text.NumberFormat format = java.text.NumberFormat.getInstance(java.util.Locale.GERMANY);
+            etNominal.setText(format.format(nominal));
 
             String jenis = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_JENIS));
             if (jenis != null && jenis.equals(DatabaseHelper.JENIS_PENGELUARAN)) {
                 rgJenis.check(R.id.rbPengeluaran);
             } else {
                 rgJenis.check(R.id.rbPemasukan);
+            }
+
+            String metode = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_METODE));
+            if (metode != null) {
+                if (metode.equals("E-Wallet")) {
+                    rgMetode.check(R.id.rbEWallet);
+                } else if (metode.equals("Lainnya")) {
+                    rgMetode.check(R.id.rbLainnya);
+                } else {
+                    rgMetode.check(R.id.rbCash);
+                }
+            }
+
+            String tanggal = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_TANGGAL));
+            etTanggal.setText(tanggal);
+            // Coba parsing tanggal lama ke kalender jika format sesuai
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd MMMM yyyy", new Locale("id", "ID"));
+                calendar.setTime(sdf.parse(tanggal));
+            } catch (Exception e) {
+                // Biarkan default current date
             }
         }
         cursor.close();
@@ -92,9 +176,10 @@ public class UbahActivity extends AppCompatActivity {
 
     private void simpanPerubahan() {
         String judul = etJudul.getText().toString().trim();
-        String nominalText = etNominal.getText().toString().trim();
+        String nominalText = etNominal.getText().toString().trim().replaceAll("[.,]", "");
+        String tanggal = etTanggal.getText().toString().trim();
 
-        if (judul.isEmpty() || nominalText.isEmpty()) {
+        if (judul.isEmpty() || nominalText.isEmpty() || tanggal.isEmpty()) {
             Toast.makeText(getApplicationContext(), "Data tidak boleh kosong!",
                     Toast.LENGTH_SHORT).show();
             return;
@@ -110,7 +195,17 @@ public class UbahActivity extends AppCompatActivity {
             jenis = DatabaseHelper.JENIS_PEMASUKAN;
         }
 
-        dbHelper.updateTransaksi(idTransaksi, judul, nominal, jenis);
+        String metode;
+        int selectedMetodeId = rgMetode.getCheckedRadioButtonId();
+        if (selectedMetodeId == R.id.rbEWallet) {
+            metode = "E-Wallet";
+        } else if (selectedMetodeId == R.id.rbLainnya) {
+            metode = "Lainnya";
+        } else {
+            metode = "Cash";
+        }
+
+        dbHelper.updateTransaksi(idTransaksi, judul, nominal, jenis, metode, tanggal);
 
         Toast.makeText(getApplicationContext(), "Berhasil disimpan", Toast.LENGTH_LONG).show();
 

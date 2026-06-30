@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFAF0"
@@ -54,23 +55,86 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
+        android:id="@+id/tvStatusHistory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cardSaldo"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_status_aktif"
+        android:padding="12dp"
+        android:text="Transaksi Aktif: (Belum Bernama)"
+        android:textColor="#1565C0"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:gravity="center" />
+
+    <TextView
         android:id="@+id/tvJudulDaftar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/cardSaldo"
+        android:layout_below="@+id/tvStatusHistory"
         android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="16dp"
         android:text="Daftar Transaksi"
         android:textColor="#424242"
         android:textSize="16sp"
         android:textStyle="bold" />
 
+    <LinearLayout
+        android:id="@+id/layoutAction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvJudulDaftar"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnReset"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="4dp"
+            android:text="Hapus"
+            android:textSize="12sp"
+            android:textColor="#C62828"
+            app:strokeColor="#C62828" />
+
+        <Button
+            android:id="@+id/btnSimpanHistory"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:backgroundTint="#1565C0"
+            android:text="Simpan"
+            android:textSize="12sp"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/btnLihatHistory"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:text="History"
+            android:textSize="12sp"
+            android:textColor="#1565C0" />
+
+    </LinearLayout>
+
     <ListView
         android:id="@+id/listViewTransaksi"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tvJudulDaftar"
+        android:layout_below="@+id/layoutAction"
         android:layout_above="@+id/fabTambah"
         android:layout_marginStart="12dp"
         android:layout_marginEnd="12dp"

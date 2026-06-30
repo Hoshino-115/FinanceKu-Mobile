@@ -96,11 +96,72 @@
                 android:text="Pengeluaran" />
         </RadioGroup>
 
+        <TextView
+            android:id="@+id/tvLabelMetode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rgJenis"
+            android:layout_marginTop="16dp"
+            android:text="Metode Transaksi"
+            android:textColor="#424242"
+            android:textSize="14sp" />
+
+        <RadioGroup
+            android:id="@+id/rgMetode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvLabelMetode"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rbCash"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Cash" />
+
+            <RadioButton
+                android:id="@+id/rbEWallet"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="E-Wallet" />
+
+            <RadioButton
+                android:id="@+id/rbLainnya"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Lainnya" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/tvLabelTanggal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rgMetode"
+            android:layout_marginTop="16dp"
+            android:text="Tanggal Transaksi"
+            android:textColor="#424242"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/etTanggal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvLabelTanggal"
+            android:layout_marginTop="4dp"
+            android:focusable="false"
+            android:clickable="true"
+            android:hint="Pilih Tanggal" />
+
         <Button
             android:id="@+id/btnSimpan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/rgJenis"
+            android:layout_below="@+id/etTanggal"
             android:layout_marginTop="32dp"
             android:backgroundTint="#1565C0"
             android:text="Simpan Perubahan"
